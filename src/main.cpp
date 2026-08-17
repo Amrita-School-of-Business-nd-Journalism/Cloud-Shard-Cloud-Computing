@@ -11,10 +11,21 @@ using namespace std;
 #include "localStorage.hpp"
 #include "sqlHelper.hpp"
 
+template <class T>
+void print(vector<T> s){
+    for(int64_t i=0;i<s.size();i++) cout<<static_cast<int>(s[i])<<" ";
+    cout<<endl;
+}
+
+
 int main(){
     LocalStorage storage;
-    sqlHelper sql_thingy;
+    sqlHelper helper;
     vector<uint8_t> u_temp = {0,1,2,3};
+    vector<uint8_t> output;
 
-    storage.writeShard("101","",0,u_temp,sql_thingy);
+    storage.createShard("101","",1024,helper);
+    storage.writeShard("101","",16,u_temp,helper);
+    if(storage.readShard("101","",16,4,output,helper)) print(output);
+
 }
