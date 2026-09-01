@@ -23,11 +23,13 @@ int main(){
 
     const char* sql = R"(
         CREATE TABLE ShardMetadata (
-            shard_id_ varchar(20) primary key,
+            shard_id_ varchar(20) unique not null,
+            dataset_id_ varchar(20) unique not null,
             size_ int,
             checksum_ varchar(100),
             created_at_ TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            localpath_ varchar(200)
+            localpath_ varchar(200),
+            primary key(shard_id_, dataset_id_)
         );
     )";
 

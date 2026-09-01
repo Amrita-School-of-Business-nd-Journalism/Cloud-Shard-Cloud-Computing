@@ -67,7 +67,7 @@ class LocalStorage{
 
 
 bool LocalStorage::createShard(const std::string& shard_id_, const std::string& dataset_id_, const std::uint64_t size, sqlHelper& helper){
-    std::filesystem::path path = helper.getLocation(shard_id_);
+    std::filesystem::path path = helper.getLocation(shard_id_, dataset_id_);
 
     try{
         if(!std::filesystem::exists(path)){
@@ -86,7 +86,7 @@ bool LocalStorage::createShard(const std::string& shard_id_, const std::string& 
 }
 
 bool LocalStorage::writeShard(const std::string& shard_id_, const std::string& dataset_id_, std::uint64_t offset, std::vector<std::uint8_t>& data, sqlHelper& helper){
-    std::filesystem::path path = helper.getLocation(shard_id_);
+    std::filesystem::path path = helper.getLocation(shard_id_, dataset_id_);
     
 
     try{
@@ -116,7 +116,7 @@ bool LocalStorage::writeShard(const std::string& shard_id_, const std::string& d
 }
 
 bool LocalStorage::readShard(const std::string& shard_id_, const std::string& dataset_id_, std::uint64_t offset, const std::uint64_t size, std::vector<std::uint8_t>& output, sqlHelper& helper){
-    std::filesystem::path path = helper.getLocation(shard_id_);
+    std::filesystem::path path = helper.getLocation(shard_id_, dataset_id_);
 
     try{
         std::ifstream file(path, std::ios::binary);
@@ -144,8 +144,8 @@ bool LocalStorage::readShard(const std::string& shard_id_, const std::string& da
     return true;
 }
 
-bool shardExist(const std::string& shard_id_, const std::string& dataset_id_, sqlHelper& helper){
-    std::filesystem::path path = helper.getLocation(shard_id_);
+bool LocalStorage::shardExist(const std::string& shard_id_, const std::string& dataset_id_, sqlHelper& helper){
+    std::filesystem::path path = helper.getLocation(shard_id_, dataset_id_);
     try{
         std::ifstream file(path, std::ios::binary);
         if(!std::filesystem::exists(path) || !file.is_open()) return false;
