@@ -4,7 +4,18 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <iostream>
 
+#include "shardMetadata.hpp"
+#include "datasetMetadata.hpp"
+#include "localStorage.hpp"
+#include "sqlHelper.hpp"
+
+
+static sqlHelper helper;
+static ShardMetadata metadata;
+
+        static LocalStorage storage;
 constexpr std::size_t BUFFER_SIZE = 1024 * 1024; // 1 MB
 
 class Downloader{
@@ -12,22 +23,28 @@ class Downloader{
         struct Buffer {
             std::vector<std::uint8_t> data;
             std::size_t used = 0;
+            Buffer(std::uint64_t shard_size): data(shard_size) {}
             Buffer(): data(BUFFER_SIZE) {}
         }; 
+
+        std::size_t shard_index = 0;
+        std::uint64_t shard_size;
+        // std::string dataset_id_ = "200";
+
+
+        void updateCounter();
     
     public:
-        size_t writeCallBack(
+
+        static size_t writeCallBack(
             void* ptr,
             size_t size,
             size_t nmemb,
             void* userdata
         );
 
-        bool download(
-            std::string link,
-            std::size_t start_range,
-            std::size_t end_range
-        );
+        bool download(const DatasetMetadata& dataset_metadata);
+        void updateMetadata(const ShardMetadata& METADATA);
 };
 
 size_t Downloader::writeCallBack(void* ptr, size_t size, size_t nmemb, void* userdata){
@@ -41,7 +58,7 @@ size_t Downloader::writeCallBack(void* ptr, size_t size, size_t nmemb, void* use
 
     while(position < incoming_size){
         std::size_t space = BUFFER_SIZE - buffer->used;
-        std::size_t toCopy = min(space, incoming_size - position);
+        std::size_t toCopy = std::min(space, incoming_size - position);
 
         std::memcpy(
             buffer->data.data() + buffer->used,
@@ -53,37 +70,41 @@ size_t Downloader::writeCallBack(void* ptr, size_t size, size_t nmemb, void* use
         position += toCopy;
 
         if(buffer->used == BUFFER_SIZE){
-            // Do something
-
+            metadata.print();
+            storage.createShard(metadata.shard_id_,metadata.dataset_id_,BUFFER_SIZE,helper);
+            storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer->data,helper);
             buffer->used = 0;
+            metadata.shard_id_ = std::to_string(std::stoi(metadata.shard_id_)+1);
         }
     }
     
     return incoming_size;
 }
 
-bool Downloader::download(std::string link, std::size_t start_range, std::size_t end_range){
+bool Downloader::download(const DatasetMetadata& dataset_metadata){
     CURL* curl = curl_easy_init();
     if(!curl) return false;
 
-    Buffer buffer;
+    // this->shard_size = shard_size;
+
+    Buffer buffer(BUFFER_SIZE);
 
     curl_easy_setopt(
         curl,
         CURLOPT_URL,
-        link
+        dataset_metadata.link.c_str()
     );
 
-    curl_easy_setopt(
-        curl,
-        CURLOPT_RANGE,
-        std::to_string(start_range) + "-" + std::to_string(end_range)
-    );
+    // curl_easy_setopt(
+    //     curl,
+    //     CURLOPT_RANGE,
+    //     std::to_string(dataset_metadata.start_range) + "-" + std::to_string(dataset_metadata.end_range)
+    // );
 
     curl_easy_setopt(
         curl,
         CURLOPT_WRITEFUNCTION,
-        writeCallBack
+        &Downloader::writeCallBack
     );
 
     curl_easy_setopt(
@@ -95,16 +116,33 @@ bool Downloader::download(std::string link, std::size_t start_range, std::size_t
     CURLcode result = curl_easy_perform(curl);
 
     if (result != CURLE_OK) {
+    std::cerr << "curl_easy_perform failed: "
+              << curl_easy_strerror(result)
+              << '\n';
+
         curl_easy_cleanup(curl);
         return false;
     }
 
     if (buffer.used > 0) {
-        // Process final partial chunk here.
+        metadata.print();
+        helper.create_shard_data(metadata);
+        storage.createShard(metadata.shard_id_,metadata.dataset_id_,500,helper);
+        storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer.data,helper);
+        buffer.used = 0;
     }
+
     curl_easy_cleanup(curl);
 
     return true;
+}
+
+void Downloader::updateCounter(){
+    shard_index++;
+}
+
+void Downloader::updateMetadata(const ShardMetadata& METADATA){
+    metadata = METADATA;
 }
 
 #endif
