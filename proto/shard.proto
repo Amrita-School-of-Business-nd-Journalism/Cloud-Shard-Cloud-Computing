@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package shard;
+
+service Shard {
+    rpc getShard(ShardRequest) returns (ShardReply);
+}
+
+message ShardRequest {
+    string shard_id_ = 1;
+    string dataset_id_ = 2;
+    uint64 offset = 3;
+    uint64 size = 4;
+}
+
+message ShardReply {
+    bytes data = 1;
+}

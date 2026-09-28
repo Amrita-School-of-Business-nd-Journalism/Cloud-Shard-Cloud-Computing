@@ -28,6 +28,7 @@ class LocalStorage{
             const std::string& dataset_id_,
             std::uint64_t offset,
             std::vector<std::uint8_t>& data,
+            std::uint64_t size,
             sqlHelper& helper
         );
 
@@ -85,7 +86,7 @@ bool LocalStorage::createShard(const std::string& shard_id_, const std::string& 
     }
 }
 
-bool LocalStorage::writeShard(const std::string& shard_id_, const std::string& dataset_id_, std::uint64_t offset, std::vector<std::uint8_t>& data, sqlHelper& helper){
+bool LocalStorage::writeShard(const std::string& shard_id_, const std::string& dataset_id_, std::uint64_t offset, std::vector<std::uint8_t>& data, std::uint64_t size, sqlHelper& helper){
     std::filesystem::path path = helper.getLocation(shard_id_, dataset_id_);
     
 
@@ -100,7 +101,7 @@ bool LocalStorage::writeShard(const std::string& shard_id_, const std::string& d
 
         file.write(
             reinterpret_cast<const char *>(data.data()),
-            static_cast<std::streamsize>(data.size())
+            static_cast<std::streamsize>(size)
         );
 
         if(!file.good()) return false;

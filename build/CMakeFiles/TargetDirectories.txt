@@ -1,0 +1,6 @@
+/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles/createDB.dir
+/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles/sendFileClient.dir
+/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles/sendFileServer.dir
+/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles/main.dir
+/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles/edit_cache.dir
+/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles/rebuild_cache.dir

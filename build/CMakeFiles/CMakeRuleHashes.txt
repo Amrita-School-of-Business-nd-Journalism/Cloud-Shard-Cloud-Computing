@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+ed78ca5334bb64cb0d691c92a2fcf696 generated/shard.pb.cc

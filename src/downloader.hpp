@@ -70,9 +70,11 @@ size_t Downloader::writeCallBack(void* ptr, size_t size, size_t nmemb, void* use
         position += toCopy;
 
         if(buffer->used == BUFFER_SIZE){
+            metadata.size_ = buffer->used;
             metadata.print();
-            storage.createShard(metadata.shard_id_,metadata.dataset_id_,BUFFER_SIZE,helper);
-            storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer->data,helper);
+            helper.create_shard_data(metadata);
+            if(!storage.createShard(metadata.shard_id_,metadata.dataset_id_,metadata.size_,helper)) std::cout<<"Didn't create shard at all"<<std::endl;
+            storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer->data,metadata.size_,helper);
             buffer->used = 0;
             metadata.shard_id_ = std::to_string(std::stoi(metadata.shard_id_)+1);
         }
@@ -94,6 +96,9 @@ bool Downloader::download(const DatasetMetadata& dataset_metadata){
         CURLOPT_URL,
         dataset_metadata.link.c_str()
     );
+
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    // curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0");
 
     // curl_easy_setopt(
     //     curl,
@@ -123,12 +128,13 @@ bool Downloader::download(const DatasetMetadata& dataset_metadata){
         curl_easy_cleanup(curl);
         return false;
     }
-
+    std::cout<<"Buffer used:"<<buffer.used<<std::endl;
     if (buffer.used > 0) {
+        metadata.size_ = buffer.used;
         metadata.print();
         helper.create_shard_data(metadata);
-        storage.createShard(metadata.shard_id_,metadata.dataset_id_,500,helper);
-        storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer.data,helper);
+        storage.createShard(metadata.shard_id_,metadata.dataset_id_,metadata.size_,helper);
+        if(!storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer.data,metadata.size_,helper)) std::cout<<"Failed write"<<std::endl;
         buffer.used = 0;
     }
 

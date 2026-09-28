@@ -22,6 +22,7 @@ class ShardMetadata{
             std::cout<<shard_id_<<std::endl;
             std::cout<<dataset_id_<<std::endl;
             std::cout<<localPath_<<std::endl;
+            std::cout<<size_<<std::endl;
             std::cout<<std::endl;
         }
 
