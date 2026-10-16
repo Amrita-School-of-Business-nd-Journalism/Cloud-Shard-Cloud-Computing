@@ -11,6 +11,7 @@ class sqlHelper{
     public:
         std::string getLocation(const std::string& shard_id_, const std::string& dataset_id_);
         bool create_shard_data(const ShardMetadata& metadata);
+        std::size_t getNextShardId(const std::string& dataset_id_);
 };
 
 std::string sqlHelper::getLocation(const std::string& shard_id_, const std::string& dataset_id_){
@@ -46,6 +47,20 @@ bool sqlHelper::create_shard_data(const ShardMetadata& metadata){
         return false;
     }
     return true;
+}
+
+std::size_t sqlHelper::getNextShardId(const std::string& dataset_id_){
+    sqlite3_stmt* stmt = nullptr;
+    sqlite3_prepare_v2(db, "SELECT shard_id_ FROM ShardMetadata WHERE dataset_id_=? order by shard_id_ desc limit 1", -1, &stmt, nullptr);
+    sqlite3_bind_text(stmt,1,dataset_id_.c_str(),-1,SQLITE_TRANSIENT);
+    std::string result;
+    if (sqlite3_step(stmt) == SQLITE_ROW){
+        const unsigned char* value = sqlite3_column_text(stmt, 0);
+        if (value) result = reinterpret_cast<const char*>(value);
+    }
+    sqlite3_finalize(stmt);
+    std::size_t output = stoull(result) + 1;
+    return output;
 }
 
 #endif

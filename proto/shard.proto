@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
+// import "google/protobuf/empty.proto";
 
 package shard;
 
 service Shard {
     rpc getShard(ShardRequest) returns (ShardReply);
-    rpc storeShard(ShardData) returns (google.protobuf.Empty);
+    rpc storeShard(ShardData) returns (ShardSaveReply);
 }
 
 message ShardRequest {
@@ -23,4 +23,9 @@ message ShardReply {
 message ShardData {
     string dataset_id_ = 1;
     bytes data = 2;
+}
+
+message ShardSaveReply {
+    bool status = 1;
+    string message = 2;
 }
