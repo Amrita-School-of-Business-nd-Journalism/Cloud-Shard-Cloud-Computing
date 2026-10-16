@@ -2,8 +2,11 @@ from concurrent import futures
 import time
 import grpc
 
-import coordinator_pb2 as pb2
-import coordinator_pb2_grpc as pb2_grpc
+import coordinator_pb2 as coordinator_pb2
+import coordinator_pb2_grpc as coordinator_pb2_grpc
+
+import ingest_pb2 as ingest_pb2
+import ingest_pb2_grpc as ingest_pb2_grpc
 
 
 # Temporary in-memory registry.
@@ -11,7 +14,7 @@ import coordinator_pb2_grpc as pb2_grpc
 nodes = {}
 
 
-class CoordinatorService(pb2_grpc.CoordinatorServicer):
+class CoordinatorService(coordinator_pb2_grpc.CoordinatorServicer):
 
     def RegisterNode(self, request, context):
         node_id = request.node_id.strip()
@@ -24,7 +27,7 @@ class CoordinatorService(pb2_grpc.CoordinatorServicer):
             )
 
         if node_id in nodes:
-            return pb2.RegisterNodeResponse(
+            return coordinator_pb2.RegisterNodeResponse(
                 success=True,
                 message="Node is already registered",
                 already_registered=True
@@ -40,7 +43,7 @@ class CoordinatorService(pb2_grpc.CoordinatorServicer):
 
         print(f"Registered node: {node_id} at {endpoint}")
 
-        return pb2.RegisterNodeResponse(
+        return coordinator_pb2.RegisterNodeResponse(
             success=True,
             message="Node registered successfully",
             already_registered=False
@@ -61,7 +64,7 @@ class CoordinatorService(pb2_grpc.CoordinatorServicer):
         node["used_bytes"] = request.used_bytes
         node["total_bytes"] = request.total_bytes
 
-        return pb2.HeartbeatResponse(
+        return coordinator_pb2.HeartbeatResponse(
             accepted=True,
             message="Heartbeat received"
         )
@@ -72,7 +75,7 @@ def start_grpc_server():
         futures.ThreadPoolExecutor(max_workers=10)
     )
 
-    pb2_grpc.add_CoordinatorServicer_to_server(
+    coordinator_pb2_grpc.add_CoordinatorServicer_to_server(
         CoordinatorService(), server
     )
 
@@ -83,5 +86,131 @@ def start_grpc_server():
     server.wait_for_termination()
 
 
+def ingest_dataset_client():
+    print("\n--- Dataset Ingestion Client ---")
+
+    # Get dataset information from the user.
+    dataset_id = input("Enter dataset ID: ").strip()
+    zip_url = input("Enter ZIP download URL: ").strip()
+
+    if not dataset_id or not zip_url:
+        print("Dataset ID and ZIP URL are required.")
+        return
+
+    # Collect currently registered, online nodes.
+    available_nodes = [
+        node["endpoint"]
+        for node in nodes.values()
+        if node["online"]
+    ]
+
+    if not available_nodes:
+        print("No online nodes are currently registered.")
+        return
+
+    print("\nAvailable nodes:")
+    for index, endpoint in enumerate(available_nodes, start=1):
+        print(f"{index}. {endpoint}")
+
+    # Ask the user for a shard count for each node.
+    shard_counts = []
+
+    print("\nEnter the number of shards for each node:")
+
+    for endpoint in available_nodes:
+        while True:
+            try:
+                count = int(
+                    input(f"Shards for {endpoint}: ").strip()
+                )
+
+                if count < 0:
+                    print("Shard count cannot be negative.")
+                    continue
+
+                shard_counts.append(count)
+                break
+
+            except ValueError:
+                print("Please enter a valid integer.")
+
+    # Connect to the separate dataset-ingestion gRPC server.
+    # Replace this address with the actual server's IP and port.
+    ingestion_server_address = "localhost:50060" # Ingest ip, needs to be changed for differnet thingy.
+
+    try:
+        with grpc.insecure_channel(
+            ingestion_server_address
+        ) as channel:
+
+            stub = ingest_pb2_grpc.IngestDatasetStub(channel)
+
+            request = ingest_pb2.IngestDatasetRequest(
+                dataset_id=dataset_id,
+                zip_url=zip_url,
+                node_endpoints=available_nodes,
+                shard_counts=shard_counts,
+            )
+
+            # Replace IngestDataset with the actual RPC method
+            # name declared in your .proto service.
+            response = stub.downloadDataset(
+                request,
+                # timeout=30
+            )
+
+            print("\nDataset ingestion request sent successfully.")
+            print("Response:", response)
+
+    except grpc.RpcError as error:
+        print("\nFailed to contact the ingestion server.")
+        print("Status:", error.code())
+        print("Details:", error.details())
+
+
 if __name__ == "__main__":
-    start_grpc_server()
+    import threading
+
+    server_thread = threading.Thread(
+        target=start_grpc_server,
+        daemon=True
+    )
+    server_thread.start()
+
+    print("\nCoordinator is running.")
+    print("Waiting for nodes to register...")
+    print("Type 'start' to ingest a dataset.")
+    print("Type 'nodes' to list registered nodes.")
+    print("Type 'exit' to stop the program.\n")
+
+    try:
+        while True:
+            command = input("Command: ").strip().lower()
+
+            if command == "start":
+                ingest_dataset_client()
+
+            elif command == "nodes":
+                if not nodes:
+                    print("No nodes registered yet.")
+                else:
+                    print("\nRegistered nodes:")
+                    for node_id, node in nodes.items():
+                        status = (
+                            "ONLINE" if node["online"]
+                            else "OFFLINE"
+                        )
+                        print(
+                            f"{node_id}: {node['endpoint']} "
+                            f"[{status}]"
+                        )
+
+            elif command == "exit":
+                print("Shutting down coordinator...")
+                break
+
+            elif command:
+                print("Unknown command. Use start, nodes, or exit.")
+
+    except (KeyboardInterrupt, EOFError):
+        print("\nExiting coordinator.")

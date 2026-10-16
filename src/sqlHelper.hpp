@@ -49,17 +49,55 @@ bool sqlHelper::create_shard_data(const ShardMetadata& metadata){
     return true;
 }
 
-std::size_t sqlHelper::getNextShardId(const std::string& dataset_id_){
+std::size_t sqlHelper::getNextShardId(
+    const std::string& dataset_id_
+) {
     sqlite3_stmt* stmt = nullptr;
-    sqlite3_prepare_v2(db, "SELECT shard_id_ FROM ShardMetadata WHERE dataset_id_=? order by shard_id_ desc limit 1", -1, &stmt, nullptr);
-    sqlite3_bind_text(stmt,1,dataset_id_.c_str(),-1,SQLITE_TRANSIENT);
-    std::string result;
-    if (sqlite3_step(stmt) == SQLITE_ROW){
-        const unsigned char* value = sqlite3_column_text(stmt, 0);
-        if (value) result = reinterpret_cast<const char*>(value);
+
+    int rc = sqlite3_prepare_v2(
+        db,
+        "SELECT shard_id_ FROM ShardMetadata "
+        "WHERE dataset_id_=? "
+        "ORDER BY CAST(shard_id_ AS INTEGER) DESC "
+        "LIMIT 1",
+        -1, &stmt, nullptr
+    );
+
+    if (rc != SQLITE_OK) {
+        std::cerr << "Prepare failed: "
+                  << sqlite3_errmsg(db) << '\n';
+        return 0; // Error sentinel
     }
+
+    sqlite3_bind_text(
+        stmt, 1, dataset_id_.c_str(), -1, SQLITE_TRANSIENT
+    );
+
+    rc = sqlite3_step(stmt);
+
+    std::size_t output = 1; // First shard ID
+
+    if (rc == SQLITE_ROW) {
+        const unsigned char* value = sqlite3_column_text(stmt, 0);
+
+        if (value) {
+            try {
+                output = std::stoull(
+                    reinterpret_cast<const char*>(value)
+                ) + 1;
+            } catch (const std::exception& e) {
+                std::cerr << "Invalid shard ID: "
+                          << e.what() << '\n';
+                output = 0;
+            }
+        }
+    } else if (rc != SQLITE_DONE) {
+        std::cerr << "Query failed: "
+                  << sqlite3_errmsg(db) << '\n';
+        output = 0;
+    }
+
     sqlite3_finalize(stmt);
-    std::size_t output = stoull(result) + 1;
     return output;
 }
 

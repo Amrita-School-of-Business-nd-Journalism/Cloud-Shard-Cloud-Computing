@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudShard · Control Center</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('dashboard') }}">
+        <span class="brand-mark">C</span>
+        <span><strong>CloudShard</strong><small>CONTROL CENTER</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span>▦</span> Overview</a>
+      <a class="nav-item" href="#ingestion"><span>⇧</span> Dataset ingestion</a>
+      <a class="nav-item" href="#nodes"><span>▤</span> Storage nodes</a>
+      <a class="nav-item" href="#datasets"><span>▧</span> Datasets & shards</a>
+      <a class="nav-item" href="#jobs"><span>◷</span> Ingestion jobs</a>
+      <div class="sidebar-bottom">
+        <div class="connection-dot"></div>
+        <div><strong>Dashboard online</strong><small>Local Flask instance</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">DISTRIBUTED DATA PLATFORM</div>
+          <h1>Control center</h1>
+          <p class="subtitle">Monitor datasets, ingestion and storage-node health in one place.</p>
+        </div>
+        <div class="topbar-right">
+          <span class="environment"><span class="green-dot"></span> LOCAL INSTANCE</span>
+          <div class="avatar">CS</div>
+        </div>
+      </header>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <section id="overview" class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-top"><span class="stat-icon violet">▧</span><span class="stat-caption">CATALOG</span></div>
+          <div class="stat-value">{{ stats.datasets }}</div>
+          <div class="stat-label">Datasets registered</div>
+          <div class="stat-foot">All known datasets</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span class="stat-icon green">▤</span><span class="stat-caption">INFRASTRUCTURE</span></div>
+          <div class="stat-value">{{ stats.online_nodes }}<span class="stat-muted"> / {{ stats.nodes }}</span></div>
+          <div class="stat-label">Online storage nodes</div>
+          <div class="stat-foot">Based on latest reported status</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span class="stat-icon blue">▦</span><span class="stat-caption">DISTRIBUTION</span></div>
+          <div class="stat-value">{{ stats.shards }}</div>
+          <div class="stat-label">Shards recorded</div>
+          <div class="stat-foot">{{ stats.stored_bytes|bytes_label }} tracked</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-caption">PIPELINE</span></div>
+          <div class="stat-value">{{ stats.active_jobs }}</div>
+          <div class="stat-label">Active ingestion jobs</div>
+          <div class="stat-foot">Queued or currently processing</div>
+        </article>
+      </section>
+
+      <section id="ingestion" class="panel ingestion-panel">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">DATA PIPELINE</div>
+            <h2>Ingest a dataset</h2>
+            <p>Queue a source URL for the C++ ingestion server to download, extract, shard and distribute.</p>
+          </div>
+          <span class="pill pill-violet">NEW DATASET</span>
+        </div>
+        <form method="post" class="ingestion-form">
+          <input type="hidden" name="action" value="queue_dataset">
+          <label>
+            Dataset name
+            <input type="text" name="dataset_name" placeholder="e.g. bee-audio-v1" maxlength="120" required>
+          </label>
+          <label class="url-field">
+            Source ZIP URL
+            <input type="url" name="source_url" placeholder="https://example.com/dataset.zip" required>
+          </label>
+          <button type="submit" class="primary-button">＋ Queue ingestion</button>
+        </form>
+        <div class="pipeline-hint"><span class="hint-icon">i</span><span>This currently records the dataset and job in SQLite. The gRPC call to your C++ ingestion server is an integration point to implement next.</span></div>
+      </section>
+
+      <div class="content-grid">
+        <section id="nodes" class="panel">
+          <div class="section-heading">
+            <div><h2>Storage nodes</h2><p>Registered C++ shard servers</p></div>
+            <span class="count-badge">{{ stats.nodes }} total</span>
+          </div>
+          {% if nodes %}
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>NODE</th><th>STATUS</th><th>SHARDS</th><th>CAPACITY</th></tr></thead>
+                <tbody>
+                  {% for node in nodes %}
+                  <tr>
+                    <td><div class="primary-cell">{{ node.node_id }}</div><div class="secondary-cell">{{ node.endpoint }}</div></td>
+                    <td><span class="status status-{{ node.status|lower }}">{{ node.status }}</span></td>
+                    <td>{{ node.shard_count }}</td>
+                    <td><div>{{ node.used_bytes|bytes_label }} <span class="table-muted">/ {{ node.total_bytes|bytes_label }}</span></div>
+                      <div class="capacity-track"><span style="width: {{ (100 * node.used_bytes / node.total_bytes if node.total_bytes else 0)|round|int }}%"></span></div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <div class="empty-icon">▤</div>
+              <strong>No storage nodes registered</strong>
+              <p>Nodes will appear here after your C++ servers register with the coordinator.</p>
+            </div>
+          {% endif %}
+        </section>
+
+        <section class="panel activity-panel">
+          <div class="section-heading"><div><h2>Recent activity</h2><p>Latest coordinator events</p></div><span class="live-indicator"><span></span> LIVE DATA</span></div>
+          {% if activity %}
+            <div class="activity-list">
+              {% for item in activity %}
+              <div class="activity-item">
+                <span class="activity-marker {{ item.level }}"></span>
+                <div class="activity-body"><div>{{ item.message }}</div><small>{{ item.created_at|replace('T', ' ')|replace('+00:00', ' UTC') }}</small></div>
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state compact">
+              <div class="empty-icon">◷</div><strong>No activity yet</strong>
+              <p>Events will show up as datasets and nodes are added.</p>
+            </div>
+          {% endif %}
+        </section>
+      </div>
+
+      <section id="datasets" class="panel data-panel">
+        <div class="section-heading">
+          <div><h2>Datasets & shard distribution</h2><p>Dataset catalog and known shard totals</p></div>
+          <span class="count-badge">{{ stats.datasets }} datasets</span>
+        </div>
+        {% if datasets %}
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>DATASET</th><th>STATUS</th><th>SHARDS</th><th>TRACKED SIZE</th><th>CREATED</th></tr></thead>
+            <tbody>
+              {% for dataset in datasets %}
+              <tr>
+                <td><div class="primary-cell">{{ dataset.name }}</div><div class="secondary-cell mono">{{ dataset.dataset_id }}</div></td>
+                <td><span class="status status-{{ dataset.status|lower }}">{{ dataset.status }}</span></td>
+                <td>{{ dataset.shard_count }}</td>
+                <td>{{ dataset.size_bytes|bytes_label }}</td>
+                <td class="table-muted">{{ dataset.created_at[:19]|replace('T', ' ') }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">▧</div><strong>Your dataset catalog is empty</strong>
+          <p>Queue a dataset above to create the first catalog entry.</p>
+          <a href="#ingestion" class="text-link">Go to ingestion ↑</a>
+        </div>
+        {% endif %}
+      </section>
+
+      <section id="jobs" class="panel data-panel">
+        <div class="section-heading">
+          <div><h2>Ingestion jobs</h2><p>Download → extract → shard → distribute</p></div>
+          <span class="count-badge">{{ jobs|length }} recent</span>
+        </div>
+        {% if jobs %}
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>JOB / DATASET</th><th>STATUS</th><th>CURRENT STAGE</th><th>UPDATED</th></tr></thead>
+            <tbody>
+              {% for job in jobs %}
+              <tr>
+                <td><div class="primary-cell mono">{{ job.job_id }}</div><div class="secondary-cell">{{ job.dataset_name }}</div></td>
+                <td><span class="status status-{{ job.status|lower }}">{{ job.status }}</span></td>
+                <td><div class="primary-cell">{{ job.stage }}</div><div class="secondary-cell">{{ job.message }}</div></td>
+                <td class="table-muted">{{ job.updated_at[:19]|replace('T', ' ') }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state compact">
+          <div class="empty-icon">◷</div><strong>No ingestion jobs</strong>
+          <p>Jobs will appear here when you queue a dataset.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <footer><span>CloudShard Control Center</span><span>Single-page dashboard · No authentication configured</span></footer>
+    </main>
+  </div>
+</body>
+</html>

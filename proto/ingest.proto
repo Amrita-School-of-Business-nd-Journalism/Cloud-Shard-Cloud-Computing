@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package ingest;
+
+service IngestDataset {
+    rpc downloadDataset(IngestDatasetRequest) returns (IngestDatasetResponse);
+}
+
+message IngestDatasetRequest {
+    string dataset_id = 1;
+    string zip_url = 2;
+
+    repeated string node_endpoints = 3;
+    repeated uint64 shard_counts = 4;
+}
+
+message IngestDatasetResponse {
+    bool status = 1;
+    string message = 2;
+}
