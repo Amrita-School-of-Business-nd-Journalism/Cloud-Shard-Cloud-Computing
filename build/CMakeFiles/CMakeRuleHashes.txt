@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-0ea605b7d1267207aadb0eafe74bd8eb generated/coordinator.pb.cc
-ed78ca5334bb64cb0d691c92a2fcf696 generated/shard.pb.cc
