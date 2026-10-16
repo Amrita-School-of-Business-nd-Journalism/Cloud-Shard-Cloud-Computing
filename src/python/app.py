@@ -62,13 +62,18 @@ def init_db() -> None:
                 last_heartbeat TEXT
             );
             CREATE TABLE IF NOT EXISTS shards (
-                shard_id TEXT PRIMARY KEY,
                 dataset_id TEXT NOT NULL,
-                node_id TEXT,
+                node_id TEXT NOT NULL,
+                shard_id INTEGER NOT NULL,
+                dataset_shard_number INTEGER NOT NULL,
                 size_bytes INTEGER NOT NULL DEFAULT 0,
                 status TEXT NOT NULL DEFAULT 'UNKNOWN',
-                FOREIGN KEY(dataset_id) REFERENCES datasets(dataset_id),
-                FOREIGN KEY(node_id) REFERENCES nodes(node_id)
+
+                PRIMARY KEY (dataset_id, node_id, shard_id),
+                UNIQUE (dataset_id, dataset_shard_number),
+
+                FOREIGN KEY (dataset_id) REFERENCES datasets(dataset_id),
+                FOREIGN KEY (node_id) REFERENCES nodes(node_id)
             );
             CREATE TABLE IF NOT EXISTS jobs (
                 job_id TEXT PRIMARY KEY,
@@ -94,6 +99,49 @@ def add_activity(db: sqlite3.Connection, message: str, level: str = "info") -> N
         "INSERT INTO activity(level, message, created_at) VALUES (?, ?, ?)",
         (level, message, utc_now()),
     )
+
+
+def register_shard(
+    db: sqlite3.Connection,
+    dataset_id: str,
+    node_id: str,
+    size_bytes: int,
+    dataset_shard_number: int,
+) -> int:
+    row = db.execute(
+        """
+        SELECT COALESCE(MAX(shard_id), 0) + 1
+        FROM shards
+        WHERE dataset_id = ? AND node_id = ?
+        """,
+        (dataset_id, node_id),
+    ).fetchone()
+
+    shard_id = row[0]
+
+    db.execute(
+        """
+        INSERT INTO shards (
+            dataset_id,
+            node_id,
+            shard_id,
+            dataset_shard_number,
+            size_bytes,
+            status
+        )
+        VALUES (?, ?, ?, ?, ?, 'UNKNOWN')
+        """,
+        (
+            dataset_id,
+            node_id,
+            shard_id,
+            dataset_shard_number,
+            size_bytes,
+        ),
+    )
+
+    return shard_id
+
 
 
 def update_job(job_id: str, status: str, stage: str, message: str) -> None:
@@ -214,6 +262,41 @@ def run_ingestion(job_id: str, dataset_id: str, source_url: str, allocations: li
             )
             # This is the RPC name from the supplied client code.
             response = stub.downloadDataset(request_message, timeout=300)
+            with connect_db() as db:
+                db.execute("BEGIN IMMEDIATE")
+
+                dataset_shard_number = db.execute(
+                    """
+                    SELECT COALESCE(MAX(dataset_shard_number), 0) + 1
+                    FROM shards
+                    WHERE dataset_id = ?
+                    """,
+                    (dataset_id,),
+                ).fetchone()[0]
+
+                for endpoint, count in allocations:
+                    if count <= 0:
+                        continue
+
+                    row = db.execute(
+                        "SELECT node_id FROM nodes WHERE endpoint = ?",
+                        (endpoint,),
+                    ).fetchone()
+
+                    if row is None:
+                        raise ValueError(f"Unknown node endpoint: {endpoint}")
+
+                    node_id = row["node_id"]
+
+                    for _ in range(count):
+                        register_shard(
+                            db=db,
+                            dataset_id=dataset_id,
+                            node_id=node_id,
+                            size_bytes=0,
+                            dataset_shard_number=dataset_shard_number,
+                        )
+                        dataset_shard_number += 1
 
         update_job(
             job_id, "COMPLETED", "Ingestion RPC returned",
@@ -251,16 +334,19 @@ def dashboard():
             return redirect(url_for("dashboard"))
 
         allocations = []
-        for node in online_nodes:
-            raw_count = request.form.get(f"shards_{node['node_id']}", "1").strip()
-            try:
-                count = int(raw_count)
-                if count < 0:
-                    raise ValueError
-            except ValueError:
-                flash(f"Shard count for {node['node_id']} must be a non-negative integer.", "error")
-                return redirect(url_for("dashboard"))
-            allocations.append((node["endpoint"], count))
+        total_shards = int(request.form.get("total_shards", "1"))
+
+        if total_shards < 1:
+            flash("Total shards must be at least 1.", "error")
+            return redirect(url_for("dashboard"))
+
+        base = total_shards // len(online_nodes)
+        remainder = total_shards % len(online_nodes)
+
+        for i, node in enumerate(online_nodes):
+            count = base + (1 if i < remainder else 0)
+            if count > 0:
+                allocations.append((node["endpoint"], count))
         if not any(count > 0 for _, count in allocations):
             flash("At least one node must receive one or more shards.", "error")
             return redirect(url_for("dashboard"))
@@ -372,6 +458,11 @@ def api_dashboard():
     # JSON encoding handles SQLite scalar types, but not arbitrary objects.
     return jsonify(data)
 
+@app.get("/api/nodes")
+def api_online_nodes():
+    return jsonify({
+        "nodes": get_online_nodes()
+    })
 
 init_db()
 

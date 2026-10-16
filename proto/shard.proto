@@ -7,6 +7,7 @@ package shard;
 service Shard {
     rpc getShard(ShardRequest) returns (ShardReply);
     rpc storeShard(ShardData) returns (ShardSaveReply);
+    rpc listShards(ListShardsRequest) returns (ListShardsReply);
 }
 
 message ShardRequest {
@@ -28,4 +29,20 @@ message ShardData {
 message ShardSaveReply {
     bool status = 1;
     string message = 2;
+}
+
+// Add to shard.proto
+
+message ListShardsRequest {
+    string dataset_id_ = 1;
+}
+
+message ShardInfo {
+    string shard_id_ = 1;
+    uint64 size_ = 2;
+    bytes data_ = 3;
+}
+
+message ListShardsReply {
+    repeated ShardInfo shards = 1;
 }

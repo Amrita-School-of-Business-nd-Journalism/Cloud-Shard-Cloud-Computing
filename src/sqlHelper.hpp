@@ -12,6 +12,9 @@ class sqlHelper{
         std::string getLocation(const std::string& shard_id_, const std::string& dataset_id_);
         bool create_shard_data(const ShardMetadata& metadata);
         std::size_t getNextShardId(const std::string& dataset_id_);
+        std::vector<std::string> listShardIds(
+            const std::string& dataset_id_
+        );
 };
 
 std::string sqlHelper::getLocation(const std::string& shard_id_, const std::string& dataset_id_){
@@ -99,6 +102,56 @@ std::size_t sqlHelper::getNextShardId(
 
     sqlite3_finalize(stmt);
     return output;
+}
+
+std::vector<std::string> sqlHelper::listShardIds(
+    const std::string& dataset_id_
+) {
+    std::vector<std::string> shard_ids;
+    sqlite3_stmt* stmt = nullptr;
+
+    int rc = sqlite3_prepare_v2(
+        db,
+        "SELECT shard_id_ FROM ShardMetadata "
+        "WHERE dataset_id_=? "
+        "ORDER BY CAST(shard_id_ AS INTEGER) ASC",
+        -1,
+        &stmt,
+        nullptr
+    );
+
+    if (rc != SQLITE_OK) {
+        std::cerr << "Failed to list shards: "
+                  << sqlite3_errmsg(db) << '\n';
+        return shard_ids;
+    }
+
+    sqlite3_bind_text(
+        stmt,
+        1,
+        dataset_id_.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        const unsigned char* value = sqlite3_column_text(stmt, 0);
+
+        if (value) {
+            shard_ids.emplace_back(
+                reinterpret_cast<const char*>(value)
+            );
+        }
+    }
+
+    if (rc != SQLITE_DONE) {
+        std::cerr << "Failed while reading shard IDs: "
+                  << sqlite3_errmsg(db) << '\n';
+        shard_ids.clear();
+    }
+
+    sqlite3_finalize(stmt);
+    return shard_ids;
 }
 
 #endif

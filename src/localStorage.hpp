@@ -61,8 +61,19 @@ class LocalStorage{
             const std::string& dataset_id_
         );
 
+        bool readLine(
+            const std::string& shard_id_,
+            const std::string& dataset_id_,
+            std::uint64_t offset,
+            std::string& output,
+            sqlHelper& helper
+        );
+
         // Returns the vector of shardIds in the current node
-        std::vector<std::string> listShard();
+        std::vector<std::string> listShards(
+            const std::string& dataset_id_,
+            sqlHelper& helper
+        );
 
 };
 
@@ -156,6 +167,58 @@ bool LocalStorage::shardExist(const std::string& shard_id_, const std::string& d
     catch (const std::filesystem::filesystem_error&){
         return false;
     }
+}
+
+bool LocalStorage::readLine(
+    const std::string& shard_id_,
+    const std::string& dataset_id_,
+    std::uint64_t offset,
+    std::string& output,
+    sqlHelper& helper
+) {
+    std::filesystem::path path =
+        helper.getLocation(shard_id_, dataset_id_);
+
+    std::ifstream file(path, std::ios::binary);
+
+    if (!file.is_open()) {
+        return false;
+    }
+
+    file.seekg(static_cast<std::streamoff>(offset), std::ios::beg);
+
+    if (!file.good()) {
+        return false;
+    }
+
+    output.clear();
+
+    char ch;
+
+    while (file.get(ch)) {
+        if (ch == '\n') {
+            return true;
+        }
+
+        output.push_back(ch);
+    }
+
+    // Allow the final line to end at EOF without a newline.
+    return !output.empty();
+}
+
+std::vector<std::string> LocalStorage::listShards(
+    const std::string& dataset_id_,
+    sqlHelper& helper
+) {
+    std::vector<std::string> shard_ids;
+
+    // Get the next shard ID, then retrieve all IDs from 1 to that value.
+    // Instead, query the metadata table directly to avoid assumptions
+    // about whether IDs are contiguous.
+
+    // This query is implemented through a new sqlHelper method.
+    return helper.listShardIds(dataset_id_);
 }
 
 #endif

@@ -114,18 +114,86 @@ class DownloaderSplit{
         }
 };
 
-size_t DownloaderSplit::writeCallBack(void* ptr, size_t size, size_t nmemb, void* userdata){
+// size_t DownloaderSplit::writeCallBack(void* ptr, size_t size, size_t nmemb, void* userdata){
+//     auto* buffer = static_cast<Buffer*>(userdata);
+
+//     const std::size_t incoming_size = size * nmemb;
+
+//     const auto* incoming = static_cast<const std::uint8_t*>(ptr);
+
+//     std::size_t position = 0;
+
+//     while(position < incoming_size){
+//         std::size_t space = BUFFER_SIZE - buffer->used;
+//         std::size_t toCopy = std::min(space, incoming_size - position);
+
+//         std::memcpy(
+//             buffer->data.data() + buffer->used,
+//             incoming + position,
+//             toCopy
+//         );
+
+//         buffer->used += toCopy;
+//         position += toCopy;
+
+//         if(buffer->used == BUFFER_SIZE){
+//             // metadata.size_ = buffer->used;
+//             // metadata.print();
+//             // helper.create_shard_data(metadata);
+//             // if(!storage.createShard(metadata.shard_id_,metadata.dataset_id_,metadata.size_,helper)) std::cout<<"Didn't create shard at all"<<std::endl;
+//             // storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer->data,metadata.size_,helper);
+//             // buffer->used = 0;
+//             // metadata.shard_id_ = std::to_string(std::stoi(metadata.shard_id_)+1);
+//             std::vector<std::uint8_t> final_shard(
+//                 buffer->data.begin(),
+//                 buffer->data.begin() + buffer->used
+//             );
+
+//             bool status = saveShard(
+//                 node_endpoints[current_index],
+//                 metadata.dataset_id_,
+//                 final_shard
+//             );
+
+//             if (status) {
+//                 std::cout << "Shard saved successfully!\n";
+//             }
+//             else {
+//                 std::cout<<"Shard error"<<std::endl;
+//             }
+
+//             current_count++;
+//             if(current_count>=shard_counts[current_index] && current_index<shard_counts.size()){
+//                 current_index++;
+//             }
+//             buffer->used = 0;
+
+//         }
+//     }
+    
+//     return incoming_size;
+// }
+
+size_t DownloaderSplit::writeCallBack(
+    void* ptr,
+    size_t size,
+    size_t nmemb,
+    void* userdata
+) {
     auto* buffer = static_cast<Buffer*>(userdata);
 
     const std::size_t incoming_size = size * nmemb;
-
     const auto* incoming = static_cast<const std::uint8_t*>(ptr);
 
     std::size_t position = 0;
 
-    while(position < incoming_size){
+    while (position < incoming_size) {
+        // Fill the remaining buffer space.
         std::size_t space = BUFFER_SIZE - buffer->used;
-        std::size_t toCopy = std::min(space, incoming_size - position);
+        std::size_t toCopy = std::min(
+            space,
+            incoming_size - position
+        );
 
         std::memcpy(
             buffer->data.data() + buffer->used,
@@ -136,45 +204,81 @@ size_t DownloaderSplit::writeCallBack(void* ptr, size_t size, size_t nmemb, void
         buffer->used += toCopy;
         position += toCopy;
 
-        if(buffer->used == BUFFER_SIZE){
-            // metadata.size_ = buffer->used;
-            // metadata.print();
-            // helper.create_shard_data(metadata);
-            // if(!storage.createShard(metadata.shard_id_,metadata.dataset_id_,metadata.size_,helper)) std::cout<<"Didn't create shard at all"<<std::endl;
-            // storage.writeShard(metadata.shard_id_,metadata.dataset_id_,0,buffer->data,metadata.size_,helper);
-            // buffer->used = 0;
-            // metadata.shard_id_ = std::to_string(std::stoi(metadata.shard_id_)+1);
-            std::vector<std::uint8_t> final_shard(
+        // Only process when the buffer is full.
+        if (buffer->used == BUFFER_SIZE) {
+            // Find the last newline in the buffer.
+            auto last_eol = std::find(
                 buffer->data.begin(),
-                buffer->data.begin() + buffer->used
+                buffer->data.begin() + buffer->used,
+                static_cast<std::uint8_t>('\n')
+            );
+
+            // Search backwards for the last EOL.
+            if (last_eol == buffer->data.begin() + buffer->used) {
+                // No complete row yet. We need more buffer space.
+                // See note below about this case.
+                return 0;
+            }
+
+            while (last_eol != buffer->data.begin() &&
+                   *(last_eol - 1) != '\n') {
+                // This loop is not needed; the search below
+                // directly locates the last newline.
+                break;
+            }
+
+            last_eol = std::find(
+                std::make_reverse_iterator(
+                    buffer->data.begin() + buffer->used
+                ),
+                std::make_reverse_iterator(buffer->data.begin()),
+                static_cast<std::uint8_t>('\n')
+            ).base();
+
+            std::size_t shard_size =
+                static_cast<std::size_t>(
+                    last_eol - buffer->data.begin()
+                );
+
+            // Include the newline in the shard.
+            std::vector<std::uint8_t> shard(
+                buffer->data.begin(),
+                buffer->data.begin() + shard_size
             );
 
             bool status = saveShard(
                 node_endpoints[current_index],
                 metadata.dataset_id_,
-                final_shard
+                shard
             );
 
-            if (status) {
-                std::cout << "Shard saved successfully!\n";
-            }
-            else {
-                std::cout<<"Shard error"<<std::endl;
+            if (!status) {
+                std::cerr << "Failed to save shard\n";
+                return 0;
             }
 
-            current_count++;
-            if(current_count>=shard_counts[current_index] && current_index<shard_counts.size()){
-                current_index++;
-            }
-            buffer->used = 0;
+            // Preserve everything after the last EOL.
+            std::size_t remaining = buffer->used - shard_size;
 
+            std::memmove(
+                buffer->data.data(),
+                buffer->data.data() + shard_size,
+                remaining
+            );
+
+            buffer->used = remaining;
+
+            // Keep your existing node-allocation logic here,
+            // if you still want to assign shards by count.
         }
     }
-    
+
     return incoming_size;
 }
 
 bool DownloaderSplit::download(const DatasetMetadata& dataset_metadata){
+    current_index = 0;
+    
     CURL* curl = curl_easy_init();
     if(!curl) return false;
 

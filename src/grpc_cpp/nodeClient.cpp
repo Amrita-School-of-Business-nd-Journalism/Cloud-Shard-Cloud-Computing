@@ -9,7 +9,9 @@ using namespace std;
 #include "coordinator.grpc.pb.h"
 #include "shard.grpc.pb.h"
 
-#include "../grpc/saveFile.hpp"
+// #include "../grpc/saveFile.hpp"
+// #include "../grpc/sendFile.hpp"
+#include "../grpc/cloudShardService.hpp"
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -25,7 +27,7 @@ using grpc::Server;
 using grpc::ServerBuilder;
 
 int main(){
-    StoreShardService service("Node_2_Shards/");
+    CloudShardService service("Node_2_Shards/");
 
     ServerBuilder builder;
 
