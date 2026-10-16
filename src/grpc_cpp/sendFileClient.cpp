@@ -17,8 +17,7 @@ using shard::ShardRequest;
 using shard::Shard;
 
 
-int main()
-{
+int main(){
     // Connect to the server
     std::shared_ptr<Channel> channel =
         grpc::CreateChannel(

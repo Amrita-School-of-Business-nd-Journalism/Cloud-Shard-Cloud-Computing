@@ -24,6 +24,7 @@ namespace shard {
 
 static const char* Shard_method_names[] = {
   "/shard.Shard/getShard",
+  "/shard.Shard/storeShard",
 };
 
 std::unique_ptr< Shard::Stub> Shard::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -34,6 +35,7 @@ std::unique_ptr< Shard::Stub> Shard::NewStub(const std::shared_ptr< ::grpc::Chan
 
 Shard::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
   : channel_(channel), rpcmethod_getShard_(Shard_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_storeShard_(Shard_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Shard::Stub::getShard(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::shard::ShardReply* response) {
@@ -59,6 +61,29 @@ void Shard::Stub::async::getShard(::grpc::ClientContext* context, const ::shard:
   return result;
 }
 
+::grpc::Status Shard::Stub::storeShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::google::protobuf::Empty* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::shard::ShardData, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_storeShard_, context, request, response);
+}
+
+void Shard::Stub::async::storeShard(::grpc::ClientContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::shard::ShardData, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_storeShard_, context, request, response, std::move(f));
+}
+
+void Shard::Stub::async::storeShard(::grpc::ClientContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_storeShard_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* Shard::Stub::PrepareAsyncstoreShardRaw(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::google::protobuf::Empty, ::shard::ShardData, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_storeShard_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* Shard::Stub::AsyncstoreShardRaw(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncstoreShardRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 Shard::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Shard_method_names[0],
@@ -70,12 +95,29 @@ Shard::Service::Service() {
              ::shard::ShardReply* resp) {
                return service->getShard(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Shard_method_names[1],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Shard::Service, ::shard::ShardData, ::google::protobuf::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](Shard::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::shard::ShardData* req,
+             ::google::protobuf::Empty* resp) {
+               return service->storeShard(ctx, req, resp);
+             }, this)));
 }
 
 Shard::Service::~Service() {
 }
 
 ::grpc::Status Shard::Service::getShard(::grpc::ServerContext* context, const ::shard::ShardRequest* request, ::shard::ShardReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Shard::Service::storeShard(::grpc::ServerContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -433,6 +433,8 @@ CMakeFiles/main.dir/generated/shard.pb.cc.o: \
  /usr/include/google/protobuf/message.h \
  /usr/include/google/protobuf/map.h \
  /usr/include/google/protobuf/reflection.h \
+ /usr/include/google/protobuf/empty.pb.h \
+ /usr/include/google/protobuf/generated_message_bases.h \
  /usr/include/google/protobuf/generated_message_tctable_impl.h \
  /usr/include/absl/status/status.h \
  /usr/include/absl/status/internal/status_internal.h \

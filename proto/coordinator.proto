@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package cloudshard;
+
+service Coordinator {
+    rpc RegisterNode(RegisterNodeRequest)
+        returns (RegisterNodeResponse);
+
+    rpc Heartbeat(HeartbeatRequest)
+        returns (HeartbeatResponse);
+}
+
+message RegisterNodeRequest {
+    string node_id = 1;
+    string endpoint = 2;
+}
+
+message RegisterNodeResponse {
+    bool success = 1;
+    string message = 2;
+    bool already_registered = 3;
+}
+
+message HeartbeatRequest {
+    string node_id = 1;
+    uint64 used_bytes = 2;
+    uint64 total_bytes = 3;
+}
+
+message HeartbeatResponse {
+    bool accepted = 1;
+    string message = 2;
+}

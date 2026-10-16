@@ -157,6 +157,19 @@ sendFileServer/fast:
 .PHONY : sendFileServer/fast
 
 #=============================================================================
+# Target rules for targets named server_register_heartbeat
+
+# Build rule for target.
+server_register_heartbeat: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server_register_heartbeat
+.PHONY : server_register_heartbeat
+
+# fast build rule for target.
+server_register_heartbeat/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/build
+.PHONY : server_register_heartbeat/fast
+
+#=============================================================================
 # Target rules for targets named main
 
 # Build rule for target.
@@ -169,6 +182,78 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+generated/coordinator.grpc.pb.o: generated/coordinator.grpc.pb.cc.o
+.PHONY : generated/coordinator.grpc.pb.o
+
+# target to build an object file
+generated/coordinator.grpc.pb.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/coordinator.grpc.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/coordinator.grpc.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/coordinator.grpc.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/coordinator.grpc.pb.cc.o
+.PHONY : generated/coordinator.grpc.pb.cc.o
+
+generated/coordinator.grpc.pb.i: generated/coordinator.grpc.pb.cc.i
+.PHONY : generated/coordinator.grpc.pb.i
+
+# target to preprocess a source file
+generated/coordinator.grpc.pb.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/coordinator.grpc.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/coordinator.grpc.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/coordinator.grpc.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/coordinator.grpc.pb.cc.i
+.PHONY : generated/coordinator.grpc.pb.cc.i
+
+generated/coordinator.grpc.pb.s: generated/coordinator.grpc.pb.cc.s
+.PHONY : generated/coordinator.grpc.pb.s
+
+# target to generate assembly for a file
+generated/coordinator.grpc.pb.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/coordinator.grpc.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/coordinator.grpc.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/coordinator.grpc.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/coordinator.grpc.pb.cc.s
+.PHONY : generated/coordinator.grpc.pb.cc.s
+
+generated/coordinator.pb.o: generated/coordinator.pb.cc.o
+.PHONY : generated/coordinator.pb.o
+
+# target to build an object file
+generated/coordinator.pb.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/coordinator.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/coordinator.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/coordinator.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/coordinator.pb.cc.o
+.PHONY : generated/coordinator.pb.cc.o
+
+generated/coordinator.pb.i: generated/coordinator.pb.cc.i
+.PHONY : generated/coordinator.pb.i
+
+# target to preprocess a source file
+generated/coordinator.pb.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/coordinator.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/coordinator.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/coordinator.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/coordinator.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/coordinator.pb.cc.i
+.PHONY : generated/coordinator.pb.cc.i
+
+generated/coordinator.pb.s: generated/coordinator.pb.cc.s
+.PHONY : generated/coordinator.pb.s
+
+# target to generate assembly for a file
+generated/coordinator.pb.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/coordinator.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/coordinator.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/coordinator.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/coordinator.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/coordinator.pb.cc.s
+.PHONY : generated/coordinator.pb.cc.s
+
 generated/shard.grpc.pb.o: generated/shard.grpc.pb.cc.o
 .PHONY : generated/shard.grpc.pb.o
 
@@ -177,6 +262,7 @@ generated/shard.grpc.pb.cc.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/shard.grpc.pb.cc.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/shard.grpc.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/shard.grpc.pb.cc.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/shard.grpc.pb.cc.o
 .PHONY : generated/shard.grpc.pb.cc.o
 
@@ -188,6 +274,7 @@ generated/shard.grpc.pb.cc.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/shard.grpc.pb.cc.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/shard.grpc.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/shard.grpc.pb.cc.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/shard.grpc.pb.cc.i
 .PHONY : generated/shard.grpc.pb.cc.i
 
@@ -199,6 +286,7 @@ generated/shard.grpc.pb.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/shard.grpc.pb.cc.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/shard.grpc.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/shard.grpc.pb.cc.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/shard.grpc.pb.cc.s
 .PHONY : generated/shard.grpc.pb.cc.s
 
@@ -210,6 +298,7 @@ generated/shard.pb.cc.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/shard.pb.cc.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/shard.pb.cc.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/shard.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/shard.pb.cc.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/shard.pb.cc.o
 .PHONY : generated/shard.pb.cc.o
 
@@ -221,6 +310,7 @@ generated/shard.pb.cc.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/shard.pb.cc.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/shard.pb.cc.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/shard.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/shard.pb.cc.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/shard.pb.cc.i
 .PHONY : generated/shard.pb.cc.i
 
@@ -232,6 +322,7 @@ generated/shard.pb.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/createDB.dir/build.make CMakeFiles/createDB.dir/generated/shard.pb.cc.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileClient.dir/build.make CMakeFiles/sendFileClient.dir/generated/shard.pb.cc.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/generated/shard.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/generated/shard.pb.cc.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/generated/shard.pb.cc.s
 .PHONY : generated/shard.pb.cc.s
 
@@ -307,6 +398,30 @@ src/grpc_cpp/sendFileServer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sendFileServer.dir/build.make CMakeFiles/sendFileServer.dir/src/grpc_cpp/sendFileServer.cpp.s
 .PHONY : src/grpc_cpp/sendFileServer.cpp.s
 
+src/grpc_cpp/server_register_heartbeat.o: src/grpc_cpp/server_register_heartbeat.cpp.o
+.PHONY : src/grpc_cpp/server_register_heartbeat.o
+
+# target to build an object file
+src/grpc_cpp/server_register_heartbeat.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/src/grpc_cpp/server_register_heartbeat.cpp.o
+.PHONY : src/grpc_cpp/server_register_heartbeat.cpp.o
+
+src/grpc_cpp/server_register_heartbeat.i: src/grpc_cpp/server_register_heartbeat.cpp.i
+.PHONY : src/grpc_cpp/server_register_heartbeat.i
+
+# target to preprocess a source file
+src/grpc_cpp/server_register_heartbeat.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/src/grpc_cpp/server_register_heartbeat.cpp.i
+.PHONY : src/grpc_cpp/server_register_heartbeat.cpp.i
+
+src/grpc_cpp/server_register_heartbeat.s: src/grpc_cpp/server_register_heartbeat.cpp.s
+.PHONY : src/grpc_cpp/server_register_heartbeat.s
+
+# target to generate assembly for a file
+src/grpc_cpp/server_register_heartbeat.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_register_heartbeat.dir/build.make CMakeFiles/server_register_heartbeat.dir/src/grpc_cpp/server_register_heartbeat.cpp.s
+.PHONY : src/grpc_cpp/server_register_heartbeat.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -343,6 +458,13 @@ help:
 	@echo "... main"
 	@echo "... sendFileClient"
 	@echo "... sendFileServer"
+	@echo "... server_register_heartbeat"
+	@echo "... generated/coordinator.grpc.pb.o"
+	@echo "... generated/coordinator.grpc.pb.i"
+	@echo "... generated/coordinator.grpc.pb.s"
+	@echo "... generated/coordinator.pb.o"
+	@echo "... generated/coordinator.pb.i"
+	@echo "... generated/coordinator.pb.s"
 	@echo "... generated/shard.grpc.pb.o"
 	@echo "... generated/shard.grpc.pb.i"
 	@echo "... generated/shard.grpc.pb.s"
@@ -358,6 +480,9 @@ help:
 	@echo "... src/grpc_cpp/sendFileServer.o"
 	@echo "... src/grpc_cpp/sendFileServer.i"
 	@echo "... src/grpc_cpp/sendFileServer.s"
+	@echo "... src/grpc_cpp/server_register_heartbeat.o"
+	@echo "... src/grpc_cpp/server_register_heartbeat.i"
+	@echo "... src/grpc_cpp/server_register_heartbeat.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

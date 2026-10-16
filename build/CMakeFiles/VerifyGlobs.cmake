@@ -4,6 +4,7 @@
 # PROTO_FILES at CMakeLists.txt:91 (file)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/Sachcith/Sem 5 WSL/Cloud/Project/proto/*.proto")
 set(OLD_GLOB
+  "/home/Sachcith/Sem 5 WSL/Cloud/Project/proto/coordinator.proto"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/proto/shard.proto"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
@@ -33,6 +34,7 @@ set(OLD_GLOB
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/createDB.cpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/grpc_cpp/sendFileClient.cpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/grpc_cpp/sendFileServer.cpp"
+  "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/grpc_cpp/server_register_heartbeat.cpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/main.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
@@ -88,6 +90,7 @@ set(OLD_GLOB
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/downloader.hpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/grpc/receiveFile.hpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/grpc/sendFile.hpp"
+  "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/grpc/splitDownloader.hpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/localStorage.hpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/shardMetadata.hpp"
   "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/sqlHelper.hpp"

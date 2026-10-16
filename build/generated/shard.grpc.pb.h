@@ -43,11 +43,20 @@ class Shard final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::shard::ShardReply>> PrepareAsyncgetShard(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::shard::ShardReply>>(PrepareAsyncgetShardRaw(context, request, cq));
     }
+    virtual ::grpc::Status storeShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::google::protobuf::Empty* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>> AsyncstoreShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>>(AsyncstoreShardRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>> PrepareAsyncstoreShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>>(PrepareAsyncstoreShardRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
       virtual void getShard(::grpc::ClientContext* context, const ::shard::ShardRequest* request, ::shard::ShardReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void getShard(::grpc::ClientContext* context, const ::shard::ShardRequest* request, ::shard::ShardReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void storeShard(::grpc::ClientContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void storeShard(::grpc::ClientContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -55,6 +64,8 @@ class Shard final {
    private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::shard::ShardReply>* AsyncgetShardRaw(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::shard::ShardReply>* PrepareAsyncgetShardRaw(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>* AsyncstoreShardRaw(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::google::protobuf::Empty>* PrepareAsyncstoreShardRaw(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -66,11 +77,20 @@ class Shard final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::shard::ShardReply>> PrepareAsyncgetShard(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::shard::ShardReply>>(PrepareAsyncgetShardRaw(context, request, cq));
     }
+    ::grpc::Status storeShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::google::protobuf::Empty* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>> AsyncstoreShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>>(AsyncstoreShardRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>> PrepareAsyncstoreShard(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>>(PrepareAsyncstoreShardRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
       void getShard(::grpc::ClientContext* context, const ::shard::ShardRequest* request, ::shard::ShardReply* response, std::function<void(::grpc::Status)>) override;
       void getShard(::grpc::ClientContext* context, const ::shard::ShardRequest* request, ::shard::ShardReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void storeShard(::grpc::ClientContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response, std::function<void(::grpc::Status)>) override;
+      void storeShard(::grpc::ClientContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -84,7 +104,10 @@ class Shard final {
     class async async_stub_{this};
     ::grpc::ClientAsyncResponseReader< ::shard::ShardReply>* AsyncgetShardRaw(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::shard::ShardReply>* PrepareAsyncgetShardRaw(::grpc::ClientContext* context, const ::shard::ShardRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* AsyncstoreShardRaw(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::google::protobuf::Empty>* PrepareAsyncstoreShardRaw(::grpc::ClientContext* context, const ::shard::ShardData& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_getShard_;
+    const ::grpc::internal::RpcMethod rpcmethod_storeShard_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -93,6 +116,7 @@ class Shard final {
     Service();
     virtual ~Service();
     virtual ::grpc::Status getShard(::grpc::ServerContext* context, const ::shard::ShardRequest* request, ::shard::ShardReply* response);
+    virtual ::grpc::Status storeShard(::grpc::ServerContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_getShard : public BaseClass {
@@ -114,7 +138,27 @@ class Shard final {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_getShard<Service > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_storeShard : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_storeShard() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_storeShard() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status storeShard(::grpc::ServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequeststoreShard(::grpc::ServerContext* context, ::shard::ShardData* request, ::grpc::ServerAsyncResponseWriter< ::google::protobuf::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_getShard<WithAsyncMethod_storeShard<Service > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_getShard : public BaseClass {
    private:
@@ -142,7 +186,34 @@ class Shard final {
     virtual ::grpc::ServerUnaryReactor* getShard(
       ::grpc::CallbackServerContext* /*context*/, const ::shard::ShardRequest* /*request*/, ::shard::ShardReply* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_getShard<Service > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_storeShard : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_storeShard() {
+      ::grpc::Service::MarkMethodCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::shard::ShardData, ::google::protobuf::Empty>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::shard::ShardData* request, ::google::protobuf::Empty* response) { return this->storeShard(context, request, response); }));}
+    void SetMessageAllocatorFor_storeShard(
+        ::grpc::MessageAllocator< ::shard::ShardData, ::google::protobuf::Empty>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::shard::ShardData, ::google::protobuf::Empty>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_storeShard() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status storeShard(::grpc::ServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* storeShard(
+      ::grpc::CallbackServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_getShard<WithCallbackMethod_storeShard<Service > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_getShard : public BaseClass {
@@ -157,6 +228,23 @@ class Shard final {
     }
     // disable synchronous version of this method
     ::grpc::Status getShard(::grpc::ServerContext* /*context*/, const ::shard::ShardRequest* /*request*/, ::shard::ShardReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_storeShard : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_storeShard() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_storeShard() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status storeShard(::grpc::ServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -182,6 +270,26 @@ class Shard final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_storeShard : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_storeShard() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_storeShard() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status storeShard(::grpc::ServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequeststoreShard(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawCallbackMethod_getShard : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -201,6 +309,28 @@ class Shard final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* getShard(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_storeShard : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_storeShard() {
+      ::grpc::Service::MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->storeShard(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_storeShard() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status storeShard(::grpc::ServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* storeShard(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
@@ -230,9 +360,36 @@ class Shard final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedgetShard(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::shard::ShardRequest,::shard::ShardReply>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_getShard<Service > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_storeShard : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_storeShard() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::shard::ShardData, ::google::protobuf::Empty>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::shard::ShardData, ::google::protobuf::Empty>* streamer) {
+                       return this->StreamedstoreShard(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_storeShard() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status storeShard(::grpc::ServerContext* /*context*/, const ::shard::ShardData* /*request*/, ::google::protobuf::Empty* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedstoreShard(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::shard::ShardData,::google::protobuf::Empty>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_getShard<WithStreamedUnaryMethod_storeShard<Service > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_getShard<Service > StreamedService;
+  typedef WithStreamedUnaryMethod_getShard<WithStreamedUnaryMethod_storeShard<Service > > StreamedService;
 };
 
 }  // namespace shard

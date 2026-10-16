@@ -1,9 +1,12 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package shard;
 
 service Shard {
     rpc getShard(ShardRequest) returns (ShardReply);
+    rpc storeShard(ShardData) returns (google.protobuf.Empty);
 }
 
 message ShardRequest {
@@ -15,4 +18,9 @@ message ShardRequest {
 
 message ShardReply {
     bytes data = 1;
+}
+
+message ShardData {
+    string dataset_id_ = 1;
+    bytes data = 2;
 }

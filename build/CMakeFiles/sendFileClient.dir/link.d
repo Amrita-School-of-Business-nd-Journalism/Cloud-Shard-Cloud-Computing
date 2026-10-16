@@ -3,6 +3,8 @@
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o \
   CMakeFiles/sendFileClient.dir/src/grpc_cpp/sendFileClient.cpp.o \
+  CMakeFiles/sendFileClient.dir/generated/coordinator.pb.cc.o \
+  CMakeFiles/sendFileClient.dir/generated/coordinator.grpc.pb.cc.o \
   CMakeFiles/sendFileClient.dir/generated/shard.pb.cc.o \
   CMakeFiles/sendFileClient.dir/generated/shard.grpc.pb.cc.o \
   /usr/lib/libgrpc++.so.1.84.0 \
@@ -173,6 +175,10 @@
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o:
 
 CMakeFiles/sendFileClient.dir/src/grpc_cpp/sendFileClient.cpp.o:
+
+CMakeFiles/sendFileClient.dir/generated/coordinator.pb.cc.o:
+
+CMakeFiles/sendFileClient.dir/generated/coordinator.grpc.pb.cc.o:
 
 CMakeFiles/sendFileClient.dir/generated/shard.pb.cc.o:
 

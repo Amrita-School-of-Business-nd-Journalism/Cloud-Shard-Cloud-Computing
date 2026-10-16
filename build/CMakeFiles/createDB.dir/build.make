@@ -69,10 +69,25 @@ include CMakeFiles/createDB.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/createDB.dir/flags.make
 
+generated/coordinator.pb.cc: /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/proto/coordinator.proto
+generated/coordinator.pb.cc: /usr/bin/protoc-36.1.0
+generated/coordinator.pb.cc: /usr/bin/grpc_cpp_plugin
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Generating protobuf/gRPC files for coordinator.proto"
+	cd "/home/Sachcith/Sem 5 WSL/Cloud/Project/proto" && /usr/bin/protoc-36.1.0 "--proto_path=/home/Sachcith/Sem 5 WSL/Cloud/Project/proto" "--cpp_out=/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated" "--grpc_out=/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated" --plugin=protoc-gen-grpc=/usr/bin/grpc_cpp_plugin coordinator.proto
+
+generated/coordinator.pb.h: generated/coordinator.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate generated/coordinator.pb.h
+
+generated/coordinator.grpc.pb.cc: generated/coordinator.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate generated/coordinator.grpc.pb.cc
+
+generated/coordinator.grpc.pb.h: generated/coordinator.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate generated/coordinator.grpc.pb.h
+
 generated/shard.pb.cc: /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/proto/shard.proto
 generated/shard.pb.cc: /usr/bin/protoc-36.1.0
 generated/shard.pb.cc: /usr/bin/grpc_cpp_plugin
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Generating protobuf/gRPC files for shard.proto"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Generating protobuf/gRPC files for shard.proto"
 	cd "/home/Sachcith/Sem 5 WSL/Cloud/Project/proto" && /usr/bin/protoc-36.1.0 "--proto_path=/home/Sachcith/Sem 5 WSL/Cloud/Project/proto" "--cpp_out=/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated" "--grpc_out=/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated" --plugin=protoc-gen-grpc=/usr/bin/grpc_cpp_plugin shard.proto
 
 generated/shard.pb.h: generated/shard.pb.cc
@@ -90,7 +105,7 @@ CMakeFiles/createDB.dir/codegen:
 CMakeFiles/createDB.dir/src/createDB.cpp.o: CMakeFiles/createDB.dir/flags.make
 CMakeFiles/createDB.dir/src/createDB.cpp.o: /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/src/createDB.cpp
 CMakeFiles/createDB.dir/src/createDB.cpp.o: CMakeFiles/createDB.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/createDB.dir/src/createDB.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/createDB.dir/src/createDB.cpp.o"
 	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/createDB.dir/src/createDB.cpp.o -MF CMakeFiles/createDB.dir/src/createDB.cpp.o.d -o CMakeFiles/createDB.dir/src/createDB.cpp.o -c "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/createDB.cpp"
 
 CMakeFiles/createDB.dir/src/createDB.cpp.i: cmake_force
@@ -101,10 +116,38 @@ CMakeFiles/createDB.dir/src/createDB.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/createDB.dir/src/createDB.cpp.s"
 	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/Sachcith/Sem 5 WSL/Cloud/Project/src/createDB.cpp" -o CMakeFiles/createDB.dir/src/createDB.cpp.s
 
+CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o: CMakeFiles/createDB.dir/flags.make
+CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o: generated/coordinator.pb.cc
+CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o: CMakeFiles/createDB.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o"
+	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o -MF CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o.d -o CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o -c "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/coordinator.pb.cc"
+
+CMakeFiles/createDB.dir/generated/coordinator.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/createDB.dir/generated/coordinator.pb.cc.i"
+	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/coordinator.pb.cc" > CMakeFiles/createDB.dir/generated/coordinator.pb.cc.i
+
+CMakeFiles/createDB.dir/generated/coordinator.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/createDB.dir/generated/coordinator.pb.cc.s"
+	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/coordinator.pb.cc" -o CMakeFiles/createDB.dir/generated/coordinator.pb.cc.s
+
+CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o: CMakeFiles/createDB.dir/flags.make
+CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o: generated/coordinator.grpc.pb.cc
+CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o: CMakeFiles/createDB.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o"
+	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o -MF CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o.d -o CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o -c "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/coordinator.grpc.pb.cc"
+
+CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.i"
+	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/coordinator.grpc.pb.cc" > CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.i
+
+CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.s"
+	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/coordinator.grpc.pb.cc" -o CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.s
+
 CMakeFiles/createDB.dir/generated/shard.pb.cc.o: CMakeFiles/createDB.dir/flags.make
 CMakeFiles/createDB.dir/generated/shard.pb.cc.o: generated/shard.pb.cc
 CMakeFiles/createDB.dir/generated/shard.pb.cc.o: CMakeFiles/createDB.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/createDB.dir/generated/shard.pb.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/createDB.dir/generated/shard.pb.cc.o"
 	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/createDB.dir/generated/shard.pb.cc.o -MF CMakeFiles/createDB.dir/generated/shard.pb.cc.o.d -o CMakeFiles/createDB.dir/generated/shard.pb.cc.o -c "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/shard.pb.cc"
 
 CMakeFiles/createDB.dir/generated/shard.pb.cc.i: cmake_force
@@ -118,7 +161,7 @@ CMakeFiles/createDB.dir/generated/shard.pb.cc.s: cmake_force
 CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o: CMakeFiles/createDB.dir/flags.make
 CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o: generated/shard.grpc.pb.cc
 CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o: CMakeFiles/createDB.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o"
 	/usr/sbin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o -MF CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o.d -o CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o -c "/home/Sachcith/Sem 5 WSL/Cloud/Project/build/generated/shard.grpc.pb.cc"
 
 CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.i: cmake_force
@@ -132,6 +175,8 @@ CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.s: cmake_force
 # Object files for target createDB
 createDB_OBJECTS = \
 "CMakeFiles/createDB.dir/src/createDB.cpp.o" \
+"CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o" \
+"CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o" \
 "CMakeFiles/createDB.dir/generated/shard.pb.cc.o" \
 "CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o"
 
@@ -139,6 +184,8 @@ createDB_OBJECTS = \
 createDB_EXTERNAL_OBJECTS =
 
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/src/createDB.cpp.o
+/home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o
+/home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/generated/shard.pb.cc.o
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/build.make
@@ -251,7 +298,7 @@ createDB_EXTERNAL_OBJECTS =
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: /usr/lib/libsystemd.so
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: /usr/lib/libcurl.so
 /home/Sachcith/Sem\ 5\ WSL/Cloud/Project/Outputs/createDB: CMakeFiles/createDB.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable \"/home/Sachcith/Sem 5 WSL/Cloud/Project/Outputs/createDB\""
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/Sachcith/Sem 5 WSL/Cloud/Project/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable \"/home/Sachcith/Sem 5 WSL/Cloud/Project/Outputs/createDB\""
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/createDB.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -262,6 +309,10 @@ CMakeFiles/createDB.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/createDB.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/createDB.dir/clean
 
+CMakeFiles/createDB.dir/depend: generated/coordinator.grpc.pb.cc
+CMakeFiles/createDB.dir/depend: generated/coordinator.grpc.pb.h
+CMakeFiles/createDB.dir/depend: generated/coordinator.pb.cc
+CMakeFiles/createDB.dir/depend: generated/coordinator.pb.h
 CMakeFiles/createDB.dir/depend: generated/shard.grpc.pb.cc
 CMakeFiles/createDB.dir/depend: generated/shard.grpc.pb.h
 CMakeFiles/createDB.dir/depend: generated/shard.pb.cc

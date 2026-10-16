@@ -96,5 +96,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/createDB.dir/DependInfo.cmake"
   "CMakeFiles/sendFileClient.dir/DependInfo.cmake"
   "CMakeFiles/sendFileServer.dir/DependInfo.cmake"
+  "CMakeFiles/server_register_heartbeat.dir/DependInfo.cmake"
   "CMakeFiles/main.dir/DependInfo.cmake"
   )

@@ -3,6 +3,8 @@
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o \
   CMakeFiles/createDB.dir/src/createDB.cpp.o \
+  CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o \
+  CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o \
   CMakeFiles/createDB.dir/generated/shard.pb.cc.o \
   CMakeFiles/createDB.dir/generated/shard.grpc.pb.cc.o \
   /usr/lib/libgrpc++.so.1.84.0 \
@@ -173,6 +175,10 @@
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o:
 
 CMakeFiles/createDB.dir/src/createDB.cpp.o:
+
+CMakeFiles/createDB.dir/generated/coordinator.pb.cc.o:
+
+CMakeFiles/createDB.dir/generated/coordinator.grpc.pb.cc.o:
 
 CMakeFiles/createDB.dir/generated/shard.pb.cc.o:
 
