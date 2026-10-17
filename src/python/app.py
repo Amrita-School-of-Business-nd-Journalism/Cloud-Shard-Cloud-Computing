@@ -18,6 +18,8 @@ import coordinator_pb2_grpc
 import ingest_pb2
 import ingest_pb2_grpc
 
+import socket
+
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("CLOUDSHARD_DB", BASE_DIR / "cloudshard_dashboard.db"))
 COORDINATOR_HOST = os.environ.get("COORDINATOR_HOST", "0.0.0.0")
@@ -28,6 +30,26 @@ HEARTBEAT_TIMEOUT_SECONDS = int(os.environ.get("HEARTBEAT_TIMEOUT_SECONDS", "30"
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-only-change-me")
 
+def print_network_info():
+    hostname = socket.gethostname()
+
+    print(f"\nHostname: {hostname}")
+    print(f"Coordinator bind address: 0.0.0.0:50051")
+
+    try:
+        # Find the local IP used for the default network route.
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+
+        print(f"Detected LAN IPv4: {local_ip}")
+        print(f"Other laptops should connect to: {local_ip}:50051")
+
+    except OSError as e:
+        print(f"Could not detect LAN IPv4: {e}")
+
+    print()
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -467,6 +489,7 @@ def api_online_nodes():
 init_db()
 
 if __name__ == "__main__":
+    print_network_info()
     grpc_thread = threading.Thread(target=start_grpc_server, daemon=True)
     grpc_thread.start()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5000")), debug=False, threaded=True)

@@ -8,10 +8,33 @@ import coordinator_pb2_grpc as coordinator_pb2_grpc
 import ingest_pb2 as ingest_pb2
 import ingest_pb2_grpc as ingest_pb2_grpc
 
+import socket
 
 # Temporary in-memory registry.
 # Later, replace this with SQLite.
 nodes = {}
+
+
+def print_network_info():
+    hostname = socket.gethostname()
+
+    print(f"\nHostname: {hostname}")
+    print(f"Coordinator bind address: 0.0.0.0:50051")
+
+    try:
+        # Find the local IP used for the default network route.
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+
+        print(f"Detected LAN IPv4: {local_ip}")
+        print(f"Other laptops should connect to: {local_ip}:50051")
+
+    except OSError as e:
+        print(f"Could not detect LAN IPv4: {e}")
+
+    print()
 
 
 class CoordinatorService(coordinator_pb2_grpc.CoordinatorServicer):
@@ -79,7 +102,7 @@ def start_grpc_server():
         CoordinatorService(), server
     )
 
-    server.add_insecure_port("[::]:50051")
+    server.add_insecure_port("0.0.0.0:50051")
     server.start()
 
     print("Coordinator listening on port 50051")
@@ -169,6 +192,9 @@ def ingest_dataset_client():
 
 
 if __name__ == "__main__":
+    print_network_info()
+    time.sleep(2)
+
     import threading
 
     server_thread = threading.Thread(

@@ -13,6 +13,9 @@ using namespace std;
 // #include "../grpc/sendFile.hpp"
 #include "../grpc/cloudShardService.hpp"
 
+#include <thread>
+#include <chrono>
+
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
@@ -78,24 +81,36 @@ int main(){
         cout<<"Status not ok"<<endl;
     }
 
-    HeartbeatRequest heartbeat_request;
+    
+    while (true) {
+        HeartbeatRequest heartbeat_request;
 
-    heartbeat_request.set_node_id("node_2");
-    heartbeat_request.set_used_bytes(0);
-    heartbeat_request.set_total_bytes(0);
+        heartbeat_request.set_node_id("node_2");
+        heartbeat_request.set_used_bytes(0);
+        heartbeat_request.set_total_bytes(0);
 
-    HeartbeatResponse heartbeat_response;
+        HeartbeatResponse heartbeat_response;
+        ClientContext heartbeat_context;
 
-    ClientContext heartbeat_context;
+        Status heartbeat_status = stub->Heartbeat(
+            &heartbeat_context,
+            heartbeat_request,
+            &heartbeat_response
+        );
 
-    status = stub->Heartbeat(&heartbeat_context, heartbeat_request, &heartbeat_response);
+        if (heartbeat_status.ok()) {
+            // cout << "Heartbeat: "
+            //     << heartbeat_response.message() << endl;
+        } else {
+            cerr << "Heartbeat failed: "
+                << heartbeat_status.error_message() << endl;
+        }
 
-    if(status.ok()){
-        cout<<heartbeat_response.message()<<endl;
+        std::this_thread::sleep_for(
+            std::chrono::seconds(1)
+        );
     }
-    else{
-        cout<<"Status not ok for heartbeat!!"<<endl;
-    }
+
 
     
 

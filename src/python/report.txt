@@ -1,0 +1,129 @@
+CLOUDSHARD BENCHMARK REPORT
+==============================================================================
+Generated: 2026-10-17T05:50:21+00:00
+Host: SachcithGNT
+Platform: Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.44
+Python: 3.14.6
+==============================================================================
+
+CONFIGURATION
+-------------
+Dataset ID: ds_93bbbbdb1858
+Flask URL: http://localhost:5000
+Requested retrieval trials: 5
+Online nodes reported by Flask: 2
+Online endpoints: 127.0.0.1:43937, 127.0.0.1:40293
+RPC timeout: 120 seconds
+Channel readiness timeout: 10 seconds
+
+DASHBOARD SNAPSHOT
+------------------
+Global stats: {
+  "active_jobs": 0,
+  "datasets": 9,
+  "nodes": 2,
+  "online_nodes": 2,
+  "shards": 0,
+  "stored_bytes": 0
+}
+Dataset row: {
+  "created_at": "2026-10-16T19:20:06+00:00",
+  "dataset_id": "ds_93bbbbdb1858",
+  "name": "CSV",
+  "shard_count": 0,
+  "size_bytes": 0,
+  "source_url": "https://drive.google.com/uc?export=download&id=1yLOtCxfOPFXO4AtLzUBd57S0n-bBwNY6",
+  "status": "FAILED"
+}
+Dashboard node records: 2
+Recent jobs visible: 9
+Recent activity entries visible: 20
+
+CLOUDSHARD RETRIEVAL PERFORMANCE
+--------------------------------
+Successful trials: 5 / 5
+Failed trials: 0
+Dataset reconstructed bytes: 31457327
+Dataset reconstructed MiB: 30.000045
+Shard count: 31
+Shard ordering: none; arrival order
+Reconstructed SHA-256: bf71323fbdbadfc5959270dbeadab3060848d22b07bc3571d72cc2d9077e1fd3
+Retrieval latency mean: 0.477100 s
+Retrieval latency median (p50): 0.436152 s
+Retrieval latency p95: 0.596176 s
+Retrieval latency min/max: 0.417384 s / 0.628320 s
+Effective throughput at median latency: 68.784 MiB/s
+Shard payload bytes received (last run): 31457327
+Retrieval amplification: 1.000000x
+Node discovery/API time (last run): 0.003201 s
+Shard concatenation time (last run): 0.002615 s
+
+Per-node RPC latency (last run):
+  127.0.0.1:43937: 0.001210 s
+  127.0.0.1:40293: 0.050753 s
+
+Shards returned per node (last run):
+  127.0.0.1:43937: 0
+  127.0.0.1:40293: 31
+
+CSV PARSING
+------------
+Last-run CSV parse time: 0.896545 s
+Mean CSV parse time across successful trials: 0.877980 s
+Median CSV parse time: 0.896545 s
+Data rows excluding header: 379773
+Columns: 8
+Headers: [
+  "id",
+  "first_name",
+  "last_name",
+  "email",
+  "age",
+  "city",
+  "salary",
+  "joined"
+]
+CSV records including header: 379774
+
+SHARD DISTRIBUTION AND BALANCE
+------------------------------
+Nodes actually returning shards: 1
+Shards per node: {
+  "127.0.0.1:40293": 31
+}
+Payload bytes per node: {
+  "127.0.0.1:40293": 31457327
+}
+Shard-count coefficient of variation: 0.000%
+Byte-volume coefficient of variation: 0.000%
+
+LOCAL-FILE BASELINE AND INTEGRITY
+---------------------------------
+Local file: /home/Sachcith/Sem 5 WSL/Cloud/Project/src/python/sample-30mb.csv
+Local file bytes: 31457327
+Local read mean: 0.015503 s
+Local read median: 0.004033 s
+Local read p95: 0.050117 s
+Local disk read throughput: 7437.883 MiB/s
+Original SHA-256: bf71323fbdbadfc5959270dbeadab3060848d22b07bc3571d72cc2d9077e1fd3
+Reconstructed SHA-256: bf71323fbdbadfc5959270dbeadab3060848d22b07bc3571d72cc2d9077e1fd3
+Byte-for-byte identical: YES
+Note: local disk read throughput is not a like-for-like remote network baseline.
+
+CLIENT RESOURCE USAGE
+---------------------
+Process peak RSS: 671.902 MiB
+User CPU time: 3.421 seconds
+System CPU time: 2.241 seconds
+
+INTERPRETATION / LIMITATIONS
+----------------------------
+* Results describe this machine, dataset, network, and test configuration.
+* listShards transfers complete shard payloads; this is a full-retrieval benchmark.
+* A local disk read is not a fair network baseline against remote retrieval.
+* The script does not automatically test concurrent clients, node failures, or alternative shard sizes.
+* Throughput uses MiB (1024 * 1024 bytes).
+* Process peak RSS is a process-wide peak, not per-node RAM.
+* Per-node requests are sequential in this version; their timings should not be interpreted as parallel retrieval.
+* Repeated runs may benefit from OS and storage caches.
+* Successful RPCs alone do not prove that every expected shard exists; compare against expected metadata or an original-file hash.
