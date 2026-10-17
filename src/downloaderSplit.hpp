@@ -278,7 +278,7 @@ size_t DownloaderSplit::writeCallBack(
 
 bool DownloaderSplit::download(const DatasetMetadata& dataset_metadata){
     current_index = 0;
-    
+
     CURL* curl = curl_easy_init();
     if(!curl) return false;
 
@@ -341,6 +341,7 @@ bool DownloaderSplit::download(const DatasetMetadata& dataset_metadata){
             metadata.dataset_id_,
             final_shard
         );
+        current_index = (current_index+1)%(node_endpoints.size());
         buffer.used = 0;
 
     }
